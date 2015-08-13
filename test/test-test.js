@@ -103,7 +103,9 @@
                     this.stub(object, "method");
                     throw new Error();
                 }).call({});
-            } catch (e) {}
+            }
+
+            catch (e) {} // eslint-disable-line no-empty
 
             assert.same(object.method, method);
         },
@@ -123,7 +125,8 @@
             var fakeDone = function (args) {
                 assert.equals(args, undefined);
                 done(args);
-            }
+            };
+
             sinon.test(function (callback) {
                 // FIXME: Why does this not finish in node but works fine in browsers?
                 // buster.nextTick(function () {
@@ -167,7 +170,7 @@
 
                 // FIXME: Why does this not finish in node but works fine in browsers?
                 // buster.nextTick(function () {
-                var result = globalObj.addOne(41);
+                globalObj.addOne(41);
                 assert(addOneInnerSpy.calledOnce);
                 callback();
                 // });
@@ -213,7 +216,8 @@
                 sinon.test(function () {
                     this.mock(object).expects("method");
                 }).call({});
-            } catch (e) {}
+            }
+            catch (e) {} // eslint-disable-line no-empty
 
             assert.same(object.method, method);
         },
@@ -227,7 +231,8 @@
                     this.mock(object).expects("method").never();
                     object.method();
                 }).call({});
-            } catch (e) {}
+            }
+            catch (e) {} // eslint-disable-line no-empty
 
             assert.same(object.method, method);
         },
@@ -250,7 +255,7 @@
 
         "maintains the this value": function () {
             var testCase = {
-                someTest: sinon.test(function (obj, stub, mock) {
+                someTest: sinon.test(function () {
                     return this;
                 })
             };
@@ -329,7 +334,7 @@
 
             "browser options": {
                 requiresSupportFor: {
-                    "ajax/browser": typeof XMLHttpRequest != "undefined" || typeof ActiveXObject != "undefined"
+                    "ajax/browser": typeof XMLHttpRequest !== "undefined" || typeof ActiveXObject !== "undefined"
                 },
 
                 "yields server when faking xhr": function () {
@@ -442,7 +447,7 @@
                 sinon.config = {
                     injectIntoThis: false,
                     properties: ["clock"],
-                    useFakeTimers: ["Date", "setTimeout"]
+                    useFakeTimers: ["Date", "setTimeout", "setImmediate"]
                 };
 
                 sinon.test(function (c) {
@@ -462,7 +467,7 @@
                 refute.same(props.Date, sinon.timers.Date);
                 refute.same(props.setTimeout, sinon.timers.setTimeout);
                 assert.same(props.clearTimeout, sinon.timers.clearTimeout);
-                assert.same(props.setImmediate, sinon.timers.setImmediate);
+                refute.same(props.setImmediate, sinon.timers.setImmediate);
                 assert.same(props.clearImmediate, sinon.timers.clearImmediate);
                 assert.same(props.setInterval, sinon.timers.setInterval);
                 assert.same(props.clearInterval, sinon.timers.clearInterval);
